@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Thumbnail Downloader – Free HD Thumbnails Download</title>
+    <meta name="description" content="Download any YouTube video thumbnail in HD, SD, or HQ quality. Fast, free, and easy to use YouTube thumbnail downloader tool.">
+    <meta name="keywords" content="youtube thumbnail downloader, hd youtube thumbnail, youtube thumbnail grabber, download youtube thumbnail free, online tool">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff0000;
+            --primary-dark: #cc0000;
+            --text-color: #0f0f0f;
+            --bg-color: #ffffff;
+            --card-bg: #f9f9f9;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #ff0000;
+            --primary-dark: #cc0000;
+            --text-color: #ffffff;
+            --bg-color: #0f0f0f;
+            --card-bg: #272727;
+            --border-color: #383838;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #ff6b6b 100%);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+        }
+
+        header h1, header .subtitle {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            animation: fadeInDown 1s ease;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg);
+        }
+
+        .main-section {
+            padding: 50px 0;
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        .input-section {
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="text"] {
+            padding: 15px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-size: 1rem;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+
+        button {
+            padding: 15px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 0, 0, 0.4);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        .error-message {
+            color: #ff3333;
+            margin-top: 10px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        .thumbnails-section {
+            display: none;
+            margin-top: 40px;
+            animation: slideUp 0.5s ease;
+        }
+
+        .thumbnails-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .thumbnail-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: zoomIn 0.5s ease;
+            position: relative;
+        }
+
+        .thumbnail-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+        .thumbnail-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .thumbnail-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .thumbnail-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .thumbnail-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .thumbnail-card:hover .thumbnail-image {
+            transform: scale(1.05);
+        }
+
+        .thumbnail-info {
+            padding: 20px;
+        }
+
+        .thumbnail-quality {
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+
+        .thumbnail-resolution {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 15px;
+        }
+
+        .thumbnail-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-download {
+            flex: 2;
+            background-color: var(--primary-color);
+        }
+
+        .btn-copy {
+            flex: 1;
+            background-color: #4a4a4a;
+        }
+
+        .btn-copy:hover {
+            background-color: #333;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        .success-message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            animation: slideInRight 0.5s ease, fadeOut 0.5s ease 2s forwards;
+        }
+
+        .floating-animation {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .floating-animation:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+
+        .floating-animation:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            width: 120px;
+            height: 120px;
+            animation-delay: 2s;
+        }
+
+        .floating-animation:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 4s;
+        }
+
+        .faq-section {
+            margin-top: 80px;
+            padding-top: 50px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .faq-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .faq-question {
+            padding: 20px;
+            background-color: var(--card-bg);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .faq-question:hover {
+            background-color: rgba(255, 0, 0, 0.05);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: var(--card-bg);
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 20px;
+            max-height: 500px;
+        }
+
+        .faq-item.active .faq-question {
+            color: var(--primary-color);
+        }
+
+        footer {
+            margin-top: 80px;
+            padding: 30px 0;
+            background-color: var(--card-bg);
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .footer-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-links a:hover:after {
+            width: 100%;
+        }
+
+        .copyright {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .thumbnails-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .floating-animation {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-animation"></div>
+    <div class="floating-animation"></div>
+    <div class="floating-animation"></div>
+
+    <div class="success-message" id="successMessage">
+        Thumbnail URL copied to clipboard!
+    </div>
+
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+            <h1>Free YouTube Thumbnail Downloader</h1>
+            <p class="subtitle">Download HD, SD, and HQ quality thumbnails from any YouTube video in seconds</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="main-section">
+            <div class="input-section">
+                <div class="input-group">
+                    <input type="text" id="youtubeUrl" placeholder="Paste YouTube video link here...">
+                    <button id="downloadBtn">
+                        <i class="fas fa-download"></i>
+                        Download Thumbnails
+                    </button>
+                </div>
+                <div class="error-message" id="errorMessage">Please enter a valid YouTube URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID)</div>
+            </div>
+
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Loading thumbnails...</p>
+            </div>
+
+            <div class="thumbnails-section" id="thumbnailsSection">
+                <h2>Available Thumbnails</h2>
+                <div class="thumbnails-grid" id="thumbnailsGrid">
+                    <!-- Thumbnails will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <section class="faq-section">
+            <h2 class="faq-title">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How to download YouTube thumbnail?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Simply paste the YouTube video URL into the input field and click the "Download Thumbnails" button. Our tool will automatically generate and display three different quality thumbnails that you can download with a single click.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is this tool free to use?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, our YouTube Thumbnail Downloader is completely free to use. There are no hidden charges, registration requirements, or usage limits.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I use thumbnails for my own videos?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>While you can download any YouTube thumbnail using our tool, please respect copyright laws. Using someone else's thumbnail for your own content without permission may violate copyright. Always ensure you have the right to use any images you download.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">About</a>
+            </div>
+            <p class="copyright">© 2023 YouTube Thumbnail Downloader. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '🌙';
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '☀️';
+                }
+            });
+
+            // YouTube URL Validation
+            function isValidYouTubeUrl(url) {
+                const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+                return youtubeRegex.test(url);
+            }
+
+            // Extract Video ID from URL
+            function extractVideoId(url) {
+                const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+                const match = url.match(regex);
+                return match ? match[1] : null;
+            }
+
+            // Generate Thumbnail URLs with multiple qualities
+            function generateThumbnailUrls(videoId) {
+                return {
+                    maxres: {
+                        url: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+                        quality: "Maximum Resolution",
+                        resolution: "1280x720"
+                    },
+                    sd: {
+                        url: `https://img.youtube.com/vi/${videoId}/sddefault.jpg`,
+                        quality: "Standard Definition",
+                        resolution: "640x480"
+                    },
+                    hq: {
+                        url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+                        quality: "High Quality",
+                        resolution: "480x360"
+                    },
+                    mq: {
+                        url: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+                        quality: "Medium Quality",
+                        resolution: "320x180"
+                    },
+                    default: {
+                        url: `https://img.youtube.com/vi/${videoId}/default.jpg`,
+                        quality: "Default",
+                        resolution: "120x90"
+                    }
+                };
+            }
+
+            // Download Thumbnail
+            function downloadThumbnail(url, quality) {
+                fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const blobUrl = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.download = `youtube-thumbnail-${quality}.jpg`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(blobUrl);
+                    })
+                    .catch(error => {
+                        console.error('Download failed:', error);
+                        alert('Failed to download thumbnail. Please try again.');
+                    });
+            }
+
+            // Copy Thumbnail URL
+            function copyThumbnailUrl(url) {
+                navigator.clipboard.writeText(url).then(() => {
+                    // Show success message
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 2500);
+                });
+            }
+
+            // Create Thumbnail Card
+            function createThumbnailCard(quality, url, resolution, qualityKey) {
+                const card = document.createElement('div');
+                card.className = 'thumbnail-card';
+                
+                card.innerHTML = `
+                    <img src="${url}" alt="YouTube Thumbnail ${quality}" class="thumbnail-image" 
+                         onerror="this.onerror=null; this.src='https://via.placeholder.com/640x360/ff0000/ffffff?text=Thumbnail+Not+Available'">
+                    <div class="thumbnail-info">
+                        <div class="thumbnail-quality">${quality}</div>
+                        <div class="thumbnail-resolution">${resolution}</div>
+                        <div class="thumbnail-actions">
+                            <button class="btn-download" data-url="${url}" data-quality="${qualityKey}">
+                                <i class="fas fa-download"></i>
+                                <span>Download</span>
+                            </button>
+                            <button class="btn-copy" data-url="${url}">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy URL</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                return card;
+            }
+
+            // Check if thumbnail exists
+            async function checkThumbnailExists(url) {
+                try {
+                    const response = await fetch(url, { method: 'HEAD' });
+                    return response.status === 200;
+                } catch (error) {
+                    return false;
+                }
+            }
+
+            // Show Thumbnails
+            async function showThumbnails(videoId) {
+                const thumbnailsSection = document.getElementById('thumbnailsSection');
+                const thumbnailsGrid = document.getElementById('thumbnailsGrid');
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                thumbnailsSection.style.display = 'none';
+                
+                // Clear previous thumbnails
+                thumbnailsGrid.innerHTML = '';
+                
+                // Generate thumbnail URLs
+                const thumbnails = generateThumbnailUrls(videoId);
+                
+                // Check which thumbnails exist and create cards for them
+                const availableThumbnails = [];
+                
+                for (const [key, thumbnail] of Object.entries(thumbnails)) {
+                    const exists = await checkThumbnailExists(thumbnail.url);
+                    if (exists) {
+                        availableThumbnails.push({ key, ...thumbnail });
+                    }
+                }
+                
+                // If no thumbnails found, show error
+                if (availableThumbnails.length === 0) {
+                    loadingIndicator.style.display = 'none';
+                    errorMessage.textContent = 'No thumbnails found for this video. Please check the URL.';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                // Create thumbnail cards
+                availableThumbnails.forEach((thumbnail, index) => {
+                    const card = createThumbnailCard(
+                        thumbnail.quality, 
+                        thumbnail.url, 
+                        thumbnail.resolution, 
+                        thumbnail.key
+                    );
+                    
+                    // Add animation delay
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    thumbnailsGrid.appendChild(card);
+                });
+                
+                // Hide loading indicator and show thumbnails
+                loadingIndicator.style.display = 'none';
+                thumbnailsSection.style.display = 'block';
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.btn-download').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const url = this.getAttribute('data-url');
+                        const quality = this.getAttribute('data-quality');
+                        downloadThumbnail(url, quality);
+                    });
+                });
+                
+                document.querySelectorAll('.btn-copy').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const url = this.getAttribute('data-url');
+                        copyThumbnailUrl(url);
+                    });
+                });
+            }
+
+            // Main Download Button Event Listener
+            const downloadBtn = document.getElementById('downloadBtn');
+            const youtubeUrlInput = document.getElementById('youtubeUrl');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            downloadBtn.addEventListener('click', function() {
+                const url = youtubeUrlInput.value.trim();
+                
+                if (!isValidYouTubeUrl(url)) {
+                    errorMessage.style.display = 'block';
+                    youtubeUrlInput.style.borderColor = '#ff3333';
+                    return;
+                }
+                
+                errorMessage.style.display = 'none';
+                youtubeUrlInput.style.borderColor = '';
+                const videoId = extractVideoId(url);
+                
+                if (videoId) {
+                    showThumbnails(videoId);
+                } else {
+                    errorMessage.style.display = 'block';
+                    youtubeUrlInput.style.borderColor = '#ff3333';
+                }
+            });
+
+            // FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    // Close all other items
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current item
+                    item.classList.toggle('active');
+                });
+            });
+
+            // Schema Markup for SEO
+            const schemaScript = document.createElement('script');
+            schemaScript.type = 'application/ld+json';
+            schemaScript.textContent = JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "How to download YouTube thumbnail?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Simply paste the YouTube video URL into the input field and click the 'Download Thumbnails' button. Our tool will automatically generate and display three different quality thumbnails that you can download with a single click."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Is this tool free to use?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes, our YouTube Thumbnail Downloader is completely free to use. There are no hidden charges, registration requirements, or usage limits."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I use thumbnails for my own videos?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "While you can download any YouTube thumbnail using our tool, please respect copyright laws. Using someone else's thumbnail for your own content without permission may violate copyright. Always ensure you have the right to use any images you download."
+                        }
+                    }
+                ]
+            });
+            document.head.appendChild(schemaScript);
+        });
+    </script>
+</body>
+</html>
